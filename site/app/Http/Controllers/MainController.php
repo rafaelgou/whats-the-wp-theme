@@ -23,8 +23,12 @@ class MainController extends Controller
      * @param  int  $id
      * @return Response
      */
-    public function results($url)
+    public function results(Request $request, $url)
     {
+        $remoteIp = $request->getClientIp();
+
+
+
         return view('index', [
             'url'     => $url,
             'results' => []
