@@ -13,27 +13,27 @@ class Search extends Model
      */
     public $timestamps = false;
 
-    /**
-     * Loading relationships
-     *
-     * @var array
-     */
-    protected $with  = ['parent', 'child'];
+    // /**
+    //  * Loading relationships
+    //  *
+    //  * @var array
+    //  */
+    // protected $with  = ['main', 'child'];
 
     /**
-     * Get the phone record associated with the user.
+     * Get the main theme record associated with the search
      */
-    public function parent()
+    public function main()
     {
-        return $this->belongsTo('App\Models\Theme', 'parent_id');
+        return $this->hasOne('App\Models\Theme', 'id', 'main_theme_id');
     }
 
     /**
-     * Get the phone record associated with the user.
+     * Get the child theme record associated with the search
      */
     public function child()
     {
-        return $this->hasOne('App\Models\Theme', 'parent_id');
+        return $this->hasOne('App\Models\Theme', 'id', 'child_theme_id');
     }
 
     /**

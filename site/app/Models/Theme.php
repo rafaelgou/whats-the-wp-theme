@@ -14,12 +14,12 @@ class Theme extends Model
      */
     public $timestamps = false;
 
-    /**
-     * Loading relationships
-     *
-     * @var array
-     */
-    protected $with  = ['parent', 'child'];
+    // /**
+    //  * Loading relationships
+    //  *
+    //  * @var array
+    //  */
+    // protected $with  = ['parent', 'child'];
 
     /**
      * Get the phone record associated with the user.

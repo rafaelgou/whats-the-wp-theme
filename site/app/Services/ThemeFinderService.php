@@ -87,7 +87,8 @@ class ThemeFinderService extends ServiceProvider
         $this->childTheme = $results['child'];
         $siteInfo         = $this->getSiteInfo();
 
-        $this->search = Search::createByArray([
+        try {
+          $this->search = Search::createByArray([
             'uri'               => $this->uri,
             'title'             => $siteInfo['title'],
             'success'           => null !== $this->mainTheme,
@@ -95,7 +96,18 @@ class ThemeFinderService extends ServiceProvider
             'ip'                => $this->remoteIp,
             'main_theme_id'     => null !== $this->mainTheme ? $this->mainTheme->id : null,
             'child_theme_id'    => null !== $this->childTheme ? $this->childTheme->id : null,
-        ]);
+          ]);
+        } catch (\Exception $e) {
+            $this->search = Search::createByArray([
+              'uri'               => $this->uri,
+              'title'             => array_key_exists('title', $siteInfo) ? $siteInfo['title'] : 'Not Available',
+              'success'           => false,
+              'wordpress_version' => null,
+              'ip'                => $this->remoteIp,
+              'main_theme_id'     => null,
+              'child_theme_id'    => null,
+            ]);
+        }
 
         return $this->search;
     }
@@ -192,7 +204,7 @@ class ThemeFinderService extends ServiceProvider
         // }
 
         // Parent
-        if ($main->hasParent()) {
+        if ($main && $main->hasParent()) {
             $child = $main;
             $main = $this->discoverParent($child);
         }
@@ -242,12 +254,14 @@ class ThemeFinderService extends ServiceProvider
 
         $content = file_get_contents($uri);
         $data = $this->getFileData($content);
-        var_dump($uri);
         preg_match('/^.*\/themes\/(.*)\/style\.css/', $uri, $matches);
-        print_r($matches);
         $data['theme_id']       = $matches > 0 ? $matches[1] : null;
         $data['style_uri']      = $uri;
         $data['screenshot_uri'] = str_replace('style.css', 'screenshot.png', $uri);
+
+        if (!$this->remoteFileExists($data['screenshot_uri'])) {
+          $data['screenshot_uri'] = null;
+        }
 
         $theme = Theme::createByArray($data);
 
@@ -310,4 +324,32 @@ class ThemeFinderService extends ServiceProvider
     {
         return trim(preg_replace("/\s*(?:\*\/|\?>).*/", '', $str));
     }
+
+    protected function remoteFileExists($url)
+    {
+        $curl = curl_init($url);
+
+        //don't fetch the actual page, you only want to check the connection is ok
+        curl_setopt($curl, CURLOPT_NOBODY, true);
+
+        //do request
+        $result = curl_exec($curl);
+
+        $ret = false;
+
+        //if request did not fail
+        if ($result !== false) {
+            //if request was ok, check response code
+            $statusCode = curl_getinfo($curl, CURLINFO_HTTP_CODE);
+
+            if ($statusCode == 200) {
+                $ret = true;
+            }
+        }
+
+        curl_close($curl);
+
+        return $ret;
+    }
+
 }

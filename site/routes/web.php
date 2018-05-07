@@ -11,9 +11,6 @@
 |
 */
 
-Route::get('/', function () {
-    return view('welcome');
-});
-
 Route::get('/', 'MainController@index');
-Route::get('/{id}', 'MainController@results');
+Route::post('/', 'MainController@results');
+Route::get('/search/{id}', 'MainController@search');
