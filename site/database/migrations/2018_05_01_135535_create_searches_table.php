@@ -20,7 +20,7 @@ class CreateSearchesTable extends Migration
 
             // Unique ID
             $table->increments('id');
-            $table->string('uri')->index()->comment('Url searched');
+            $table->string('uri'. 250)->index()->comment('Url searched');
             $table->string('title')->nullable()->index()->comment('Site Title');
             $table->boolean('success')->default(false)->comment('Search successful');
             $table->string('wordpress_version')->nullable()->comment('Wordpress Version');
