@@ -41,6 +41,9 @@ class MainController extends Controller
             $error  = $e->getMessage();
         }
 
+        if (null !== $search && null === $search->main) {
+            $error = 'Unable to discover the theme - is that a Wordpress site?';
+        }
         return view('results', [
             'uri'    => $uri,
             'search' => $search,
