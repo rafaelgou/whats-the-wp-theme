@@ -22,7 +22,7 @@
 
     @if ($error)
       <div class="alert alert-danger text-center" role="alert">
-        <h2>{{ $error }}</h2>
+        <h2>{!! $error !!}</h2>
       </div>
     @else
       @if (null !== $search && $search->main)

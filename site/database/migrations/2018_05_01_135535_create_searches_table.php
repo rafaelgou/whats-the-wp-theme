@@ -27,7 +27,7 @@ class CreateSearchesTable extends Migration
             $table->string('ip')->comment('User IP for Geolocation');
             $table->integer('main_theme_id')->unsigned()->nullable()->comment('Main Theme Id');
             $table->integer('child_theme_id')->unsigned()->nullable()->comment('Child Theme Id');
-
+            $table->longText('error')->nullable()->comment('Error');
             // Laravel created_at
             $table->timestamp('created_at')->useCurrent()->comment('Created At');
 

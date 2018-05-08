@@ -75,6 +75,4 @@ class MainController extends Controller
             'error'  => $error
         ]);
     }
-
-
 }
