@@ -52,6 +52,7 @@ class Search extends Model
         $search->ip                = $data['ip'];
         $search->main_theme_id     = $data['main_theme_id'];
         $search->child_theme_id    = $data['child_theme_id'];
+        $search->error             = array_key_exists('child_theme_id', $data) ? $data['child_theme_id'] : null;
 
         $search->save();
 

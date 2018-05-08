@@ -83,12 +83,23 @@ class ThemeFinderService extends ServiceProvider
             $this->htmlContent = $this->get();
             $this->dom         = $this->parse($this->htmlContent);
         } catch (\Exception $e) {
+            $this->search = Search::createByArray([
+                'uri'               => $this->uri,
+                'title'             => 'Not Available',
+                'success'           => false,
+                'wordpress_version' => null,
+                'ip'                => $this->remoteIp,
+                'main_theme_id'     => null,
+                'child_theme_id'    => null,
+                'error'             => $e->getMessage(),
+            ]);
+
             if (preg_match('/cURL error 51\: SSL/', $e)) {
                 throw new \Exception("SSL Certificate verify error.<br/>For security reasons, this site cannot be search.<br/>Sorry for that.", 400);
-
             }
-        }
 
+            throw new \Exception("We cannot reach this site.<br/>Sorry for that.", 400);
+        }
     }
 
     /**
