@@ -115,7 +115,10 @@ class MainController extends Controller
         */
         return DB::table('themes')
             ->select(DB::raw('name, count(*) as total'))
-            ->where('type', 'main')
+            ->where([
+              ['type', 'main'],
+              ['name', '<>', ''],
+            ])
             ->groupBy('name')
             ->orderBy('total', 'desc')
             ->limit(10)
