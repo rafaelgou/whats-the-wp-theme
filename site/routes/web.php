@@ -14,3 +14,4 @@
 Route::get('/', 'MainController@index');
 Route::post('/', 'MainController@results');
 Route::get('/search/{id}', 'MainController@search');
+Route::get('/{themeName}', 'MainController@theme');

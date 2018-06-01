@@ -6,21 +6,12 @@
 
 @section('content')
 
-  <div class="container">
+  @component('component/search-form', ['title' => true])
+  @endcomponent
 
-    <div class="row">
+@endsection
 
-      <form class="form-url" method="POST" action="/">
-        @csrf
-        <div class="text-center">
-          <h1 class="h3 mb-3 font-weight-normal">Altitude</h1>
-          <label for="inputUrl" class="sr-only">Site URL</label>
-          <input type="url" id="inputUrl" name="uri" class="form-control" placeholder="http://example.com" required autofocus>
-          <button class="btn btn-lg btn-primary btn-block" type="submit">Discover theme!</button>
-        </div>
-      </form>
-    </div>
-
-  </div>
-
+@section('sidebar')
+  @component('component/sidebar', ['topSearched' => $topSearched])
+  @endcomponent
 @endsection

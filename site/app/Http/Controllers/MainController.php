@@ -6,6 +6,8 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Services\ThemeFinderService;
 use App\Models\Search;
+use App\Models\Theme;
+use DB;
 
 class MainController extends Controller
 {
@@ -18,7 +20,9 @@ class MainController extends Controller
      */
     public function index()
     {
-        return view('index');
+        return view('index', [
+            'topSearched' => $this->topSearched()
+        ]);
     }
 
     /**
@@ -44,10 +48,12 @@ class MainController extends Controller
         if (null !== $search && null === $search->main) {
             $error = 'Unable to discover the theme - is that a Wordpress site?';
         }
+
         return view('results', [
-            'uri'    => $uri,
-            'search' => $search,
-            'error'  => $error
+            'uri'         => $uri,
+            'search'      => $search,
+            'error'       => $error,
+            'topSearched' => $this->topSearched()
         ]);
     }
 
@@ -70,9 +76,49 @@ class MainController extends Controller
         }
 
         return view('results', [
-            'uri'    => $uri,
-            'search' => $search,
-            'error'  => $error
+            'uri'         => $uri,
+            'search'      => $search,
+            'error'       => $error,
+            'topSearched' => $this->topSearched()
         ]);
+    }
+
+    /**
+     * Search
+     *
+     * @param  int  $id
+     * @return Response
+     */
+    public function theme(Request $request, $themeName)
+    {
+        $theme = Theme::where('name', $themeName)->firstOrFail();
+
+        return view('theme', [
+            'theme' => $theme,
+            'topSearched' => $this->topSearched()
+        ]);
+    }
+
+    /**
+     * Top Searched Query
+     * @return array
+     */
+    protected function topSearched()
+    {
+        /*
+        SELECT name, count(*) as total
+        FROM themes
+        WHERE `type` = 'main'
+        GROUP BY name
+        ORDER BY count(*) DESC
+        LIMIT 10
+        */
+        return DB::table('themes')
+            ->select(DB::raw('name, count(*) as total'))
+            ->where('type', 'main')
+            ->groupBy('name')
+            ->orderBy('total', 'desc')
+            ->limit(10)
+            ->get();
     }
 }

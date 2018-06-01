@@ -1,9 +1,10 @@
 <div class="row theme-info theme-{{ $theme->type }}">
 
+  @if(!(isset($standalone) && $standalone))
   <div class="col col-lg-12 text-center">
     <h3> @if($theme->type === 'main') Main Theme @else Child Theme @endif </h3>
   </div>
-
+  @endif
   <div class="col col-lg-3">
     <img src="{{ $theme->screenshot_uri ? $theme->screenshot_uri : 'http://via.placeholder.com/350x350?text=No Screenshot'  }}" alt="Theme Screenshot"  class="img-fluid"/>
   </div>
