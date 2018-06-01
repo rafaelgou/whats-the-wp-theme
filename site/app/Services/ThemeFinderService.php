@@ -267,7 +267,7 @@ class ThemeFinderService extends ServiceProvider
         if (null === $uri) {
             $nodes = $xpath->query("*/link[contains(@href, 'style.css')]");
             foreach($nodes as $node) {
-                if (preg_match('/^.*\/themes\/(.*)\/style\.css/', $node->getAttribute('href'))) {
+                if (preg_match('/^.*\/themes\/([^\/]*)\/style\.css/', $node->getAttribute('href'))) {
                     $uri = $node->getAttribute('href');
                 }
             }
@@ -279,7 +279,7 @@ class ThemeFinderService extends ServiceProvider
 
         $content = $this->fileGetContents($uri);
         $data = $this->getFileData($content);
-        preg_match('/^.*\/themes\/(.*)\/style\.css/', $uri, $matches);
+        preg_match('/^.*\/themes\/([^\/]*)\/style\.css/', $uri, $matches);
         $data['theme_id']       = count($matches) > 0 ? $matches[1] : null;
         $data['style_uri']      = $uri;
         $data['screenshot_uri'] = str_replace('style.css', 'screenshot.png', $uri);
@@ -402,7 +402,7 @@ class ThemeFinderService extends ServiceProvider
         }
         $content = $this->fileGetContents($uri);
         $data = $this->getFileData($content);
-        preg_match('/^.*\/themes\/(.*)\/style\.css/', $uri, $matches);
+        preg_match('/^.*\/themes\/([^\/]*)\/style\.css/', $uri, $matches);
         $data['theme_id']       = $child->template;
         $data['style_uri']      = $uri;
         $data['screenshot_uri'] = str_replace('style.css', 'screenshot.png', $uri);

@@ -44,6 +44,7 @@ class ThemeFinderServiceTest extends TestCase
             "https://navasotaenergy.com",
             "https://claudemirpereira.com.br",
             "https://gilmargoulart.com",
+            "http://www.monidesign.com/",
         ];
 
         foreach ($uris as $uri) {
