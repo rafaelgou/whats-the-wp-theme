@@ -6,14 +6,30 @@ A Wordpress theme discover.
 
 Install main dependencies:
 
-* PHP/MySQL or PHP/MariDB
-* [NodeJS](https://nodejs.org/en/download/)
-* [Composer](https://getcomposer.org/doc/00-intro.md#installation-linux-unix-osx)
+- PHP/MySQL, PHP/MariaDB or PHP/Postgres
+- [NodeJS](https://nodejs.org/en/download/)
+- [Composer](https://getcomposer.org/doc/00-intro.md#installation-linux-unix-osx)
+
+## Install
 
 ```bash
-cd site
+git clone ???
 composer install
 node install
+cp .env.example .env
+```
+
+### Database
+
+You need a database (MySQL/MariaDB or Postgres). Create a user credentials and a database.
+
+For MySQL it could be:
+
+```sql
+CREATE DATABASE `portfolio_resume` COLLATE 'utf8_unicode_ci';
+CREATE USER 'portfolio_resume'@'%' IDENTIFIED BY 'YOUR-STRONG-PASSWORD';
+GRANT ALL PRIVILEGES ON portfolio_resume.* TO 'portfolio_resume'@'%';
+FLUSH PRIVILEGES;
 ```
 
 Then you can run:

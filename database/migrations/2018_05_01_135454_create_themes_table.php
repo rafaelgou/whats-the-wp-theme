@@ -23,7 +23,7 @@ class CreateThemesTable extends Migration
             // Unique ID
             $table->increments('id');
 
-            $table->string('name', 255)->index()->comment('Theme Name');
+            $table->string('name', 150)->index()->comment('Theme Name');
             $table->string('type')->comment('Type main/child');
             $table->string('uri')->nullable()->comment('ThemeURI');
             $table->longText('description')->nullable()->comment('Description');
