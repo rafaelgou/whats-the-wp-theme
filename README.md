@@ -1,6 +1,6 @@
 # What's The WP Theme
 
-A Wordpress theme discover.
+A Wordpress theme discover. Working version [here](https://what-the-wp-theme.rgou.net).
 
 ## Running locally
 
@@ -12,11 +12,28 @@ Install main dependencies:
 
 ## Install
 
+### The code
+
 ```bash
-git clone ???
+git clone https://github.com/rafaelgou/whats-the-wp-theme.git
 composer install
-node install
 cp .env.example .env
+```
+
+Fill database, enviroment, debug and url settings:
+
+```env
+APP_ENV=local
+APP_KEY=LONG-RANDOM-STRING
+APP_DEBUG=true
+APP_URL=http://127.0.0.1/8000
+
+DB_CONNECTION=mysql
+DB_HOST=127.0.0.1
+DB_PORT=3306
+DB_DATABASE=wtwpt
+DB_USERNAME=wtwpt_user
+DB_PASSWORD=YOUR-STRONG-PASSWORD
 ```
 
 ### Database
@@ -26,16 +43,19 @@ You need a database (MySQL/MariaDB or Postgres). Create a user credentials and a
 For MySQL it could be:
 
 ```sql
-CREATE DATABASE `portfolio_resume` COLLATE 'utf8_unicode_ci';
-CREATE USER 'portfolio_resume'@'%' IDENTIFIED BY 'YOUR-STRONG-PASSWORD';
-GRANT ALL PRIVILEGES ON portfolio_resume.* TO 'portfolio_resume'@'%';
+CREATE DATABASE `whats_the_wp_theme` COLLATE 'utf8_unicode_ci';
+CREATE USER 'whats_the_wp_theme'@'%' IDENTIFIED BY 'YOUR-STRONG-PASSWORD';
+GRANT ALL PRIVILEGES ON whats_the_wp_theme.* TO 'whats_the_wp_theme'@'%';
 FLUSH PRIVILEGES;
 ```
+
+### Migrating and running
 
 Then you can run:
 
 ```bash
+php artisan migrate
 php artisan serve
 ```
 
-You'll have the site available at [localhost:3000](http://localhost:3000).
+You'll have the site available at [http://127.0.0.1:8000](http://127.0.0.1:8000).
