@@ -13,3 +13,4 @@ yarn-error.log
 .env
 /app/Wordpress
 /local-files
+.env.testing

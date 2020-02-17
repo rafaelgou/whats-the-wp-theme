@@ -27,8 +27,8 @@
                 </p>
                 <p>
                     <em>
-                        See the project on <a href="" target="_blank">Github</a>
-                        or on <a href="" target="_blank">my personal GIT repository</a>
+                        See the project on <a href="https://git.rgou.net/rafaelgou/whats-the-wp-theme" target="_blank">Github</a>
+                        or on <a href="https://github.com/rafaelgou/whats-the-wp-theme" target="_blank">my personal GIT repository</a>
                     </em>
                 </p>
             </div>

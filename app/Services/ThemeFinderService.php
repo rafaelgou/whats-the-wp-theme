@@ -97,10 +97,10 @@ class ThemeFinderService extends ServiceProvider
 
             Log::error($e->getMessage());
             if (preg_match('/cURL error 51\: SSL/', $e)) {
-                throw new \Exception("SSL Certificate verify error.<br/>For security reasons, this site cannot be search.<br/>Sorry for that.", 400);
+                throw new \Exception("SSL Certificate verify error.<br/>For security reasons, this site cannot be search.<br/>Sorry for that.", 4001);
             }
 
-            throw new \Exception("We cannot reach this site.<br/>Sorry for that.", 400);
+            throw new \Exception("We cannot reach this site.<br/>Sorry for that.", 4002);
         }
     }
 
@@ -283,7 +283,7 @@ class ThemeFinderService extends ServiceProvider
             $data = $this->getFileData($content);
         } catch (\Exception $e) {
             Log::error($e->getMessage());
-            throw new \Error("Cannot get site content.<br/>Sorry for that");
+            throw new \Error("Cannot get site content.<br/>Sorry for that", 4003);
         }
         preg_match('/^.*\/themes\/([^\/]*)\/style\.css/', $uri, $matches);
         $data['theme_id']       = count($matches) > 0 ? $matches[1] : null;
@@ -330,7 +330,7 @@ class ThemeFinderService extends ServiceProvider
             $data = $this->getFileData($content);
         } catch (\Exception $e) {
             Log::error($e->getMessage());
-            throw new \Error("Cannot get site content.<br/>Sorry for that");
+            throw new \Error("Cannot get site content.<br/>Sorry for that", 4003);
         }
 
         $data['theme_id']       = $themeName;

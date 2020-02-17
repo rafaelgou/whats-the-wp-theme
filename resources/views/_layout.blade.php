@@ -30,8 +30,8 @@
           <li>&copy; 2020. All rights reserved.</li>
           <li>Design: <a href="https://html5up.net" target="_blank">HTML5 UP</a></li>
           <li>Created by: <a href="https://me.rgou.net" target="_blank">Rafael Goulart</a></li>
-          <li><a href="" target="_blank"><i class="fab fa-github"></i> Github</a></li>
-          <li><a href="" target="_blank"><i class="fab fa-git"></i> Personal GIT repository</a></li>
+          <li><a href="https://git.rgou.net/rafaelgou/whats-the-wp-theme" target="_blank"><i class="fab fa-github"></i> Github</a></li>
+          <li><a href="https://github.com/rafaelgou/whats-the-wp-theme" target="_blank"><i class="fab fa-git"></i> Personal GIT repository</a></li>
         </ul>
       </div>
     </footer>
