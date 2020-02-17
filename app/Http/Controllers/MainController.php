@@ -20,9 +20,7 @@ class MainController extends Controller
      */
     public function index()
     {
-        return view('index', [
-            'topSearched' => $this->topSearched()
-        ]);
+        return view('index');
     }
 
     /**
@@ -32,6 +30,30 @@ class MainController extends Controller
      * @return Response
      */
     public function results(Request $request)
+    {
+        $data = [
+            'uri'    => $request->session()->get('uri'),
+            'search' => $request->session()->get('search'),
+            'error'  => $request->session()->get('error'),
+        ];
+
+        $uri    = $request->session()->get('uri', false);
+        $search = $request->session()->get('search', false);
+        $error  = $request->session()->get('error', false);
+        if (!$uri && !$search && !$error) {
+            $data['error'] = 'No search yet - do it below';
+        }
+
+        return view('results', $data);
+    }
+
+    /**
+     * Results
+     *
+     * @param  int  $id
+     * @return Response
+     */
+    public function search(Request $request)
     {
         $error = false;
 
@@ -49,79 +71,10 @@ class MainController extends Controller
             $error = 'Unable to discover the theme - is that a Wordpress site?';
         }
 
-        return view('results', [
-            'uri'         => $uri,
-            'search'      => $search,
-            'error'       => $error,
-            'topSearched' => $this->topSearched()
+        return redirect()->route('results')->with([
+            'uri'    => $uri,
+            'search' => $search,
+            'error'  => $error,
         ]);
-    }
-
-    /**
-     * Search
-     *
-     * @param  int  $id
-     * @return Response
-     */
-    public function search(Request $request, $id)
-    {
-        $error = false;
-        $search = Search::find($id);
-
-        if (null === $search || (null !== $search && null === $search->main)) {
-          $error = null !== $search->main ? 'Theme not found' : 'Unable to discover the theme - is that a Wordpress site?';
-          $uri = null !== $search ? $search->uri : false;
-        } else {
-          $uri = $search->uri;
-        }
-
-        return view('results', [
-            'uri'         => $uri,
-            'search'      => $search,
-            'error'       => $error,
-            'topSearched' => $this->topSearched()
-        ]);
-    }
-
-    /**
-     * Search
-     *
-     * @param  int  $id
-     * @return Response
-     */
-    public function theme(Request $request, $themeName)
-    {
-        $theme = Theme::where('name', $themeName)->firstOrFail();
-
-        return view('theme', [
-            'theme' => $theme,
-            'topSearched' => $this->topSearched()
-        ]);
-    }
-
-    /**
-     * Top Searched Query
-     * @return array
-     */
-    protected function topSearched()
-    {
-        /*
-        SELECT name, count(*) as total
-        FROM themes
-        WHERE `type` = 'main'
-        GROUP BY name
-        ORDER BY count(*) DESC
-        LIMIT 10
-        */
-        return DB::table('themes')
-            ->select(DB::raw('name, count(*) as total'))
-            ->where([
-              ['type', 'main'],
-              ['name', '<>', ''],
-            ])
-            ->groupBy('name')
-            ->orderBy('total', 'desc')
-            ->limit(10)
-            ->get();
     }
 }

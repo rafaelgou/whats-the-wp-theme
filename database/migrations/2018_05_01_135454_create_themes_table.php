@@ -34,7 +34,7 @@ class CreateThemesTable extends Migration
             $table->string('status')->nullable()->comment('Status');
             $table->string('license')->nullable()->comment('License');
             $table->string('license_uri')->nullable()->comment('License URI');
-            $table->string('tags')->nullable()->comment('Tags');
+            $table->text('tags')->nullable()->comment('Tags');
             $table->string('text_domain')->nullable()->comment('Text Domain');
             $table->string('domain_path')->nullable()->comment('Domain Path');
             $table->string('theme_id')->nullable()->comment('Theme Id');

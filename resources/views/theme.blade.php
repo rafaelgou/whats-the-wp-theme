@@ -3,23 +3,24 @@
 @section('title', ' Theme: ' . $theme->name)
 
 @section('content')
-  <div class="jumbotron">
-    <div class="container text-center">
-      <h1 class="display-3">{{ $theme->name }}</h1>
+  <section id="top" class="wrapper style3 fullscreen fade-up">
+    <div class="inner">
+      <h1 class="h3 mb-3 font-weight-normal">{{ $theme->name }}</h1>
+
+      @component('component/theme-info', ['theme' => $theme, 'standalone' => true])
+      @endcomponent
     </div>
-  </div>
-
-  @component('component/theme-info', ['theme' => $theme, 'standalone' => true])
-  @endcomponent
-
-  @component('component/search-form', ['newSearch' => true])
-  @endcomponent
-
-  <br/><br/><br/><br/><br/><br/><br/><br/><br/><br/>
-
+  </section>
+  
+  <section id="intro" class="wrapper style1 fullscreen fade-up">
+    <div class="inner">
+      @component('component/search-form', ['newSearch' => true])@endcomponent
+    </div>
+  </section>
+  @include('parts/section-one')
+  @include('parts/section-two')
 @endsection
 
 @section('sidebar')
-  @component('component/sidebar', ['topSearched' => $topSearched])
-  @endcomponent
+  @component('component/sidebar')@endcomponent
 @endsection

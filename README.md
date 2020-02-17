@@ -1,4 +1,4 @@
-# Altitude
+# What's The WP Theme
 
 A Wordpress theme discover.
 

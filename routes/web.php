@@ -11,7 +11,6 @@
 |
 */
 
-Route::get('/', 'MainController@index');
-Route::post('/', 'MainController@results');
-Route::get('/search/{id}', 'MainController@search');
-Route::get('/{themeName}', 'MainController@theme');
+Route::get('/', 'MainController@index')->name('home');
+Route::post('/search', 'MainController@search')->name('search');
+Route::get('/results', 'MainController@results')->name('results');
