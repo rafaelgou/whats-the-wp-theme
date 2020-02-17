@@ -5,9 +5,7 @@ namespace App\Http\Controllers;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Services\ThemeFinderService;
-use App\Models\Search;
-use App\Models\Theme;
-use DB;
+use Illuminate\Support\Facades\Log;
 
 class MainController extends Controller
 {
@@ -65,6 +63,7 @@ class MainController extends Controller
         } catch (\Exception $e) {
             $search = null;
             $error  = $e->getMessage();
+            Log::error($e->getMessage());
         }
 
         if (null !== $search && null === $search->main) {

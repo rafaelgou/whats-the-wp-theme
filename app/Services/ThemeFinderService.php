@@ -9,33 +9,34 @@ use GuzzleHttp\Client;
 use DOMDocument;
 use DOMNodeList;
 use DOMXpath;
+use Illuminate\Support\Facades\Log;
 
 class ThemeFinderService extends ServiceProvider
 {
 
     /**
-  	 * Headers for style.css files.
-  	 *
-  	 * @static
-  	 * @access private
-  	 * @var array
-  	 * @see https://developer.wordpress.org/reference/classes/wp_theme/
-  	 */
-  	private static $fileHeaders = array(
-    		'Name'        => 'Theme Name',
-    		'ThemeURI'    => 'Theme URI',
-    		'Description' => 'Description',
-    		'Author'      => 'Author',
-    		'AuthorURI'   => 'Author URI',
-    		'Version'     => 'Version',
-    		'Template'    => 'Template',
-    		'Status'      => 'Status',
-    		'Tags'        => 'Tags',
-    		'TextDomain'  => 'Text Domain',
-    		'DomainPath'  => 'Domain Path',
+     * Headers for style.css files.
+     *
+     * @static
+     * @access private
+     * @var array
+     * @see https://developer.wordpress.org/reference/classes/wp_theme/
+     */
+    private static $fileHeaders = [
+        'Name'        => 'Theme Name',
+        'ThemeURI'    => 'Theme URI',
+        'Description' => 'Description',
+        'Author'      => 'Author',
+        'AuthorURI'   => 'Author URI',
+        'Version'     => 'Version',
+        'Template'    => 'Template',
+        'Status'      => 'Status',
+        'Tags'        => 'Tags',
+        'TextDomain'  => 'Text Domain',
+        'DomainPath'  => 'Domain Path',
         'License'     => 'License',
         'LicenseURI'  => 'License URI',
-  	);
+      ];
 
     /**
      * @var string
@@ -94,6 +95,7 @@ class ThemeFinderService extends ServiceProvider
                 'error'             => $e->getMessage(),
             ]);
 
+            Log::error($e->getMessage());
             if (preg_match('/cURL error 51\: SSL/', $e)) {
                 throw new \Exception("SSL Certificate verify error.<br/>For security reasons, this site cannot be search.<br/>Sorry for that.", 400);
             }
@@ -206,11 +208,10 @@ class ThemeFinderService extends ServiceProvider
         $xpath    = new DOMXpath($dom);
         $nodes = $xpath->query("*/link[@type='text/css']");
         $links    = [];
-        foreach($nodes as $node) {
-          $links[] = $node->getAttribute('href');
+        foreach ($nodes as $node) {
+            $links[] = $node->getAttribute('href');
         }
 
-        // $links = $dom->getElementsByTagName('link');
         return $links;
     }
 
@@ -266,7 +267,7 @@ class ThemeFinderService extends ServiceProvider
         // Not found, try deeply
         if (null === $uri) {
             $nodes = $xpath->query("*/link[contains(@href, 'style.css')]");
-            foreach($nodes as $node) {
+            foreach ($nodes as $node) {
                 if (preg_match('/^.*\/themes\/([^\/]*)\/style\.css/', $node->getAttribute('href'))) {
                     $uri = $node->getAttribute('href');
                 }
@@ -274,18 +275,23 @@ class ThemeFinderService extends ServiceProvider
         }
 
         if (null === $uri) {
-          return null;
+            return null;
         }
 
-        $content = $this->fileGetContents($uri);
-        $data = $this->getFileData($content);
+        try {
+            $content = $this->fileGetContents($uri);
+            $data = $this->getFileData($content);
+        } catch (\Exception $e) {
+            Log::error($e->getMessage());
+            throw new \Error("Cannot get site content.<br/>Sorry for that");
+        }
         preg_match('/^.*\/themes\/([^\/]*)\/style\.css/', $uri, $matches);
         $data['theme_id']       = count($matches) > 0 ? $matches[1] : null;
         $data['style_uri']      = $uri;
         $data['screenshot_uri'] = str_replace('style.css', 'screenshot.png', $uri);
 
         if (!$this->remoteFileExists($data['screenshot_uri'])) {
-          $data['screenshot_uri'] = null;
+            $data['screenshot_uri'] = null;
         }
 
         $theme = Theme::createByArray($data);
@@ -303,11 +309,11 @@ class ThemeFinderService extends ServiceProvider
         preg_match('/wp-content\/themes\/(.*?)\//m', $this->htmlContent, $themesWpContent);
         preg_match('/app\/themes\/(.*?)\//m', $this->htmlContent, $themesApp);
 
-        if (count($themesWpContent) > 0 ) {
+        if (count($themesWpContent) > 0) {
             $themeName = $themesWpContent[1];
             $uri = "{$this->uri}/wp-content/themes/{$themesWpContent[1]}/style.css";
         }
-        if (count($themesApp) > 0 ) {
+        if (count($themesApp) > 0) {
             $themeName = $themesApp[1];
             $uri = "{$this->uri}/app/themes/{$themesApp[1]}/style.css";
         }
@@ -319,15 +325,20 @@ class ThemeFinderService extends ServiceProvider
             return null;
         }
 
-        $content = $this->fileGetContents($uri);
-        $data = $this->getFileData($content);
+        try {
+            $content = $this->fileGetContents($uri);
+            $data = $this->getFileData($content);
+        } catch (\Exception $e) {
+            Log::error($e->getMessage());
+            throw new \Error("Cannot get site content.<br/>Sorry for that");
+        }
 
         $data['theme_id']       = $themeName;
         $data['style_uri']      = $uri;
         $data['screenshot_uri'] = str_replace('style.css', 'screenshot.png', $uri);
 
         if (!$this->remoteFileExists($data['screenshot_uri'])) {
-          $data['screenshot_uri'] = null;
+            $data['screenshot_uri'] = null;
         }
 
         $theme = Theme::createByArray($data);
@@ -349,20 +360,20 @@ class ThemeFinderService extends ServiceProvider
         // Search by default id (precise, but not always available)
         $nodes = $xpath->query("*/link[@type='text/css']");
 
-        foreach($nodes as $node) {
+        foreach ($nodes as $node) {
             $cssUri = $node->getAttribute('href');
             if ($this->remoteFileExists($cssUri)) {
-              $cssContent = $this->fileGetContents($cssUri);
-              preg_match('/wp-content\/themes\/(.*?)\//m', $cssContent, $themesWpContent);
-              preg_match('/app\/themes\/(.*?)\//m', $cssContent, $themesApp);
-              if (count($themesWpContent) > 0 ) {
-                $themeName = $themesWpContent[1];
-                $uri = "{$this->uri}/wp-content/themes/{$themesWpContent[1]}/style.css";
-              }
-              if (count($themesApp) > 0 ) {
-                $themeName = $themesApp[1];
-                $uri = "{$this->uri}/app/themes/{$themesApp[1]}/style.css";
-              }
+                $cssContent = $this->fileGetContents($cssUri);
+                preg_match('/wp-content\/themes\/(.*?)\//m', $cssContent, $themesWpContent);
+                preg_match('/app\/themes\/(.*?)\//m', $cssContent, $themesApp);
+                if (count($themesWpContent) > 0) {
+                    $themeName = $themesWpContent[1];
+                    $uri = "{$this->uri}/wp-content/themes/{$themesWpContent[1]}/style.css";
+                }
+                if (count($themesApp) > 0) {
+                    $themeName = $themesApp[1];
+                    $uri = "{$this->uri}/app/themes/{$themesApp[1]}/style.css";
+                }
             }
         }
 
@@ -381,7 +392,7 @@ class ThemeFinderService extends ServiceProvider
         $data['screenshot_uri'] = str_replace('style.css', 'screenshot.png', $uri);
 
         if (!$this->remoteFileExists($data['screenshot_uri'])) {
-          $data['screenshot_uri'] = null;
+            $data['screenshot_uri'] = null;
         }
 
         $theme = Theme::createByArray($data);
@@ -420,7 +431,7 @@ class ThemeFinderService extends ServiceProvider
      * @param  string $content
      * @return array
      */
-    public function getFileData($content = '' )
+    public function getFileData($content = '')
     {
         $headers = self::$fileHeaders;
 
@@ -428,7 +439,7 @@ class ThemeFinderService extends ServiceProvider
         $content = str_replace("\r", "\n", $content);
 
         foreach ($headers as $field => $regex) {
-            if (preg_match( '/^[ \t\/*#@]*' . preg_quote( $regex, '/' ) . ':(.*)$/mi', $content, $match) && $match[1]) {
+            if (preg_match('/^[ \t\/*#@]*' . preg_quote($regex, '/') . ':(.*)$/mi', $content, $match) && $match[1]) {
                 $headers[$field] = $this->cleanup_header_comment($match[1]);
             } else {
                 $headers[$field] = '';
@@ -487,12 +498,12 @@ class ThemeFinderService extends ServiceProvider
      */
     protected function fileGetContents($uri)
     {
-        $options=array(
-            "ssl"=>array(
+        $options = [
+            "ssl" => [
                 "verify_peer"=>false,
                 "verify_peer_name"=>false,
-            ),
-        );
+            ],
+        ];
 
         return file_get_contents($uri, false, stream_context_create($options));
     }
