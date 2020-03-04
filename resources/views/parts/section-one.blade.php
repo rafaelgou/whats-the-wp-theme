@@ -20,15 +20,15 @@
                 </p>
                 <h3>Why do you do that?</h3>
                 <p>
-                    This is a small <a href="" target="_blank">open source</a> project, did as a research.
+                    This is a small open source project, did as a research.
                     The solution have been done from scratch, although there are very sophisticated tools such as
                     <a href="https://wpscan.org/" target="_blank">WPScan</a> that have many ways to achieve the same 
                     goals (even deeper, actually).
                 </p>
                 <p>
                     <em>
-                        See the project on <a href="https://git.rgou.net/rafaelgou/whats-the-wp-theme" target="_blank">Github</a>
-                        or on <a href="https://github.com/rafaelgou/whats-the-wp-theme" target="_blank">my personal GIT repository</a>
+                        See the project on <a href="https://github.com/rafaelgou/whats-the-wp-theme" target="_blank">Github</a>
+                        or on <a href="https://git.rgou.net/rafaelgou/whats-the-wp-theme" target="_blank">my personal GIT repository</a>
                     </em>
                 </p>
             </div>
