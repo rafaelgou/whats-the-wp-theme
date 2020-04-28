@@ -1,6 +1,6 @@
 # What's The WP Theme
 
-A Wordpress theme discover. Working version [here](https://what-the-wp-theme.rgou.net).
+A Wordpress theme discover. Working version [here](https://whats-the-wp-theme.rgou.net).
 
 ## Running locally
 
